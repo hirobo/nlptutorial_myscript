@@ -12,7 +12,7 @@ $ python ch03_word_devide_viterbi.py
 
 # [Step3] evaluate with this script
 $ cd ..
-$ script/gradews.pl data/wiki-ja-test.word myscript/output/ch03_wiki-ja-test_result.word
+$ script/gradews.pl data/wiki-ja-test.word myscript/output/wiki-ja-test_result.word
 
 # Result
 Sent Accuracy: 23.81% (20/84)
@@ -95,6 +95,6 @@ if __name__ == "__main__":
 
     parser.add_argument('-m', '--model', dest='model', default="output/wiki-ja-train_unigram.model", help='input model data')
     parser.add_argument('-t', '--test', dest='test', default="../data/wiki-ja-test.txt", help='input test data')
-    parser.add_argument('-r', '--result', dest='result', default="output/ch03_wiki-ja-test_result.word", help='output result file')
+    parser.add_argument('-r', '--result', dest='result', default="output/wiki-ja-test_result.word", help='output result file')
     args = parser.parse_args()
     word_devide(args.model, args.test, args.result)
