@@ -21,7 +21,6 @@ Word Rec: 80.77% (1861/2304)
 F-meas: 74.38%
 Bound Accuracy: 83.25% (2683/3223)
 '''
-
 def word_devide(model_file, test_file, result_file=None):
     # load model
     unigram_dict = ch01_test_unigram.load_model(model_file)
@@ -29,39 +28,10 @@ def word_devide(model_file, test_file, result_file=None):
     result = []
     for line in open(test_file, 'r'):
         line = line.strip()
-
         # forward viterbi
-        best_edge = defaultdict(lambda: 0)
-        best_score = defaultdict(lambda: 0)
-
-        best_edge[0] = None
-        best_score[0] = 0
-
-        for word_end in range(1, len(line)+1):
-            best_score[word_end] = float("inf")
-            best_edge[word_end] = None
-            for word_begin in range(0, word_end):
-                word = line[word_begin:word_end]
-
-                if(word in unigram_dict or len(word) == 1):
-                    #prob = unigram_dict[word]
-                    prob = ch01_test_unigram.calc_probabilitiy(word, unigram_dict)
-                    my_score = best_score[word_begin] - math.log(prob)
-                    if(my_score < best_score[word_end]):
-                        best_score[word_end] = my_score
-                        best_edge[word_end] = (word_begin, word_end)
-
-
+        best_edge, best_score = forward_step(line, unigram_dict)
         # backward viterbi
-        words = []
-        next_edge = best_edge[len(best_edge) - 1]
-        while next_edge != None:
-            word = line[next_edge[0]:next_edge[1]]
-            words.append(word)
-            next_edge = best_edge[next_edge[0]]
-
-        words = words[::-1] # reverse
-
+        words = backward_step(line, best_edge, best_score)
         result.append(" ".join(words))
 
     # return result if result_file is not assigned
@@ -75,6 +45,41 @@ def word_devide(model_file, test_file, result_file=None):
 
         print("devided words saved on: %s"%result_file)
 
+def forward_step(line, unigram_dict):
+    # forward viterbi
+    best_edge = defaultdict(lambda: 0)
+    best_score = defaultdict(lambda: 0)
+
+    best_edge[0] = None
+    best_score[0] = 0
+
+    for word_end in range(1, len(line)+1):
+        best_score[word_end] = float("inf")
+        best_edge[word_end] = None
+        for word_begin in range(0, word_end):
+            word = line[word_begin:word_end]
+
+            if(word in unigram_dict or len(word) == 1):
+                #prob = unigram_dict[word]
+                prob = ch01_test_unigram.calc_probabilitiy(word, unigram_dict)
+                my_score = best_score[word_begin] - math.log(prob)
+                if(my_score < best_score[word_end]):
+                    best_score[word_end] = my_score
+                    best_edge[word_end] = (word_begin, word_end)
+
+    return (best_edge, best_score)
+
+def backward_step(line, best_edge, best_score):
+    words = []
+    next_edge = best_edge[len(best_edge) - 1]
+    while next_edge != None:
+        word = line[next_edge[0]:next_edge[1]]
+        words.append(word)
+        next_edge = best_edge[next_edge[0]]
+
+    words = words[::-1] # reverse
+
+    return words
 
 if __name__ == "__main__":
     import argparse
