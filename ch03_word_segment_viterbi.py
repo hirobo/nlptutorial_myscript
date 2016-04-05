@@ -8,7 +8,7 @@ import ch01_test_unigram
 $ python ch01_train_unigram.py -t ../data/wiki-ja-train.word -m output/wiki-ja-train_unigram.model
 
 # [Step2] devide words with this script
-$ python ch03_word_devide_viterbi.py
+$ python ch03_word_segment_viterbi.py
 
 # [Step3] evaluate with this script
 $ cd ..
@@ -21,7 +21,7 @@ Word Rec: 80.77% (1861/2304)
 F-meas: 74.38%
 Bound Accuracy: 83.25% (2683/3223)
 '''
-def word_devide(model_file, test_file, result_file=None):
+def word_segment(model_file, test_file, result_file=None):
     # load model
     unigram_dict = ch01_test_unigram.load_model(model_file)
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     import argparse
 
     # print("[Test 1]-----------------") #this output should be same as "../test/04-answer.txt"
-    # res = word_devide("../test/04-model.txt", '../test/04-input.txt', None)
+    # res = word_segment("../test/04-model.txt", '../test/04-input.txt', None)
 
     # # output result
     # for item in res:
@@ -97,4 +97,4 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--test', dest='test', default="../data/wiki-ja-test.txt", help='input test data')
     parser.add_argument('-r', '--result', dest='result', default="output/wiki-ja-test_result.word", help='output result file')
     args = parser.parse_args()
-    word_devide(args.model, args.test, args.result)
+    word_segment(args.model, args.test, args.result)
